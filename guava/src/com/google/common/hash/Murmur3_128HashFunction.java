@@ -96,8 +96,8 @@ final class Murmur3_128HashFunction extends AbstractHashFunction implements Seri
 
     Murmur3_128Hasher(int seed) {
       super(CHUNK_SIZE);
-      this.h1 = seed;
-      this.h2 = seed;
+      this.h1 = seed & 0xFFFFFFFFL;
+      this.h2 = seed & 0xFFFFFFFFL;
       this.length = 0;
     }
 
