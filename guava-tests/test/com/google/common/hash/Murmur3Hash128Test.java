@@ -50,6 +50,17 @@ public class Murmur3Hash128Test extends TestCase {
     assertThat(foxHash.toString()).isEqualTo("6c1b07bc7bbc4be347939ac4a93c437a");
   }
 
+  // See https://github.com/google/guava/issues/3493: the reference MurmurHash3_x64_128
+  // implementation takes the seed as an unsigned 32-bit integer, but Murmur3_128Hasher's
+  // constructor assigns a negative `int` seed straight to `long` fields, sign-extending it
+  // instead of zero-extending -- so a negative seed produces a different hash than the
+  // reference implementation would for the same (unsigned) seed value. Expected values below
+  // computed independently via Python's mmh3 (MurmurHash3_x64_128, seed=0xFFFFFFFF, verified
+  // to reproduce this file's existing seed=0 known values exactly before being trusted here).
+  public void testNegativeSeedMatchesReferenceImplementation() {
+    assertHash(-1, 0x347bad75d7575e14L, 0xd940b3d7b5fb075cL, "hello");
+  }
+
   private static void assertHash(int seed, long expected1, long expected2, String stringInput) {
     HashCode expected = toHashCode(expected1, expected2);
     byte[] input = HashTestUtils.ascii(stringInput);
