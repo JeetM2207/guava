@@ -567,4 +567,19 @@ public class BaseEncodingTest extends TestCase {
     assertThat(base16().withSeparator("\n", 10).toString())
         .isEqualTo("BaseEncoding.base16().withSeparator(\"\n\", 10)");
   }
+
+  // https://github.com/google/guava/issues/5284: Closeable.close() must have no
+  // effect if the stream is already closed (maintainer-agreed: track a closed flag
+  // and reset bitBufferLength on first close), but a second close() on an
+  // encodingStream() writer was still flushing a stale buffered byte, corrupting
+  // output already read by the caller.
+  public void testEncodingStreamCloseIsIdempotent() throws IOException {
+    StringWriter w = new StringWriter();
+    OutputStream out = base64().encodingStream(w);
+    out.write(0);
+    out.close();
+    String afterFirstClose = w.toString();
+    out.close();
+    assertThat(w.toString()).isEqualTo(afterFirstClose);
+  }
 }
