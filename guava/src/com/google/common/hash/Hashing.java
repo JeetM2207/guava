@@ -180,7 +180,7 @@ public final class Hashing {
   @SuppressWarnings("IdentifierName") // the best we could do for adjacent digit blocks
   @J2ktIncompatible
   public static HashFunction murmur3_128(int seed) {
-    return new Murmur3_128HashFunction(seed);
+    return new Murmur3_128HashFunction((int) (seed & 0xFFFFFFFFL));
   }
 
   /**
