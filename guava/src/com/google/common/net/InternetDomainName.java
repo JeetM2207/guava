@@ -292,8 +292,7 @@ public final class InternetDomainName {
 
     // No initial or final dashes or underscores.
 
-    if (DASH_MATCHER.matches(part.charAt(0))
-        || DASH_MATCHER.matches(part.charAt(part.length() - 1))) {
+    if (DASH_MATCHER.matches(part.charAt(0))) {
       return false;
     }
 
